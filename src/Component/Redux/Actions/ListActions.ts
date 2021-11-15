@@ -1,7 +1,8 @@
 import axios from "axios"
+import { Dispatch } from "../../../Interface/Types"
 import { GET_LIST,EDIT_TASK, DELETE_TASK, ADD_NEW_TASK } from "../Action_types"
 
-export const GetList = () => async dispatch => {
+export const GetList = () => async (dispatch:(e:Dispatch)=>void) => {
     await axios.get("https://api.todoist.com/rest/v1/tasks", {
     headers: {
       Authorization: "Bearer 1f6cf49d242e37b86b33341d94ed020799d435a4",
@@ -14,7 +15,7 @@ export const GetList = () => async dispatch => {
         
     })
  }
- export const EditTask = (newTaskData) => async dispatch => {
+ export const EditTask = (newTaskData:{updated:{},edititem:{id:number}}) => async (dispatch:(e:Dispatch)=>void) => {
     await axios.post(
         `https://api.todoist.com/rest/v1/tasks/${newTaskData.edititem.id}`,
         newTaskData.updated,
@@ -27,7 +28,7 @@ export const GetList = () => async dispatch => {
       ).then((res)=>{
         dispatch({
             type: EDIT_TASK,
-            payload:res
+            payload:res.data
          }) 
       });
 
@@ -36,7 +37,7 @@ export const GetList = () => async dispatch => {
    
   }
 
-  export const DeleteTask = (id) => async dispatch => {
+  export const DeleteTask = (id:any) => async (dispatch:(e:Dispatch)=>void) => {
 
     await axios
     .delete(`https://api.todoist.com/rest/v1/tasks/${id}`, {
@@ -44,17 +45,19 @@ export const GetList = () => async dispatch => {
         Authorization: "Bearer 1f6cf49d242e37b86b33341d94ed020799d435a4",
       },
     })
-    .then((response) => {
+    .then((res) => {
+      console.log(res.data);
+      
         dispatch({
             type: DELETE_TASK,
-            payload:response
+            payload: res.data
          })
     })
-    .catch((err) => console.log("err", err.message));
+    .catch((err) => console.log("err===>", err));
     
   }
 
-  export const AddNewTask = (data) => async dispatch => {
+  export const AddNewTask = (data:{content:string}) => async (dispatch:(e:Dispatch)=>void) => {
 
     await axios.post("https://api.todoist.com/rest/v1/tasks", data, {
     headers: {

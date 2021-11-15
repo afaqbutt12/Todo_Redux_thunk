@@ -1,19 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch} from 'react-redux'
 import "./Style.css";
 import { AddNewTask } from "../Redux/Actions/ListActions";
-const Todoo = ({ toupdate }) => {
-  const [taskName, setTaskName] = useState("");
+const Todoo = (): JSX.Element => {
+  const [taskName, setTaskName] = React.useState<string>('');
 const dispatch = useDispatch()
   const AddTask = async () => {
     let newTaskData = {
       content: taskName,
     };
-    dispatch(AddNewTask(newTaskData));
-    return toupdate();
+
+    if( newTaskData){
+
+      dispatch(AddNewTask(newTaskData));
+    }
   };
 
-  const AddTaskHandler = async (e) => {
+  const AddTaskHandler = async (e:{preventDefault:()=>void}) => {
     e.preventDefault();
 
     taskName && AddTask();
@@ -28,7 +31,7 @@ const dispatch = useDispatch()
           placeholder="✍ Add Items"
           value={taskName}
           className="form-control"
-          onChange={(e) => setTaskName(e.target.value)}
+          onChange={(e:{target:{value:string}}) => setTaskName(e.target.value)}
         />
         <button className="fa fa-plus add-btn" type="submit"></button>
         </div>

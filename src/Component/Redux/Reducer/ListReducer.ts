@@ -6,7 +6,7 @@ const initialState = {
     
   };
   
-  export const GetListReducer = (State = initialState, action) => {
+  export const GetListReducer = (State = initialState, action:any) => {
     const { type, payload } = action;
   
     switch (type) {

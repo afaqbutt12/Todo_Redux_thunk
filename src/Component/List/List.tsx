@@ -1,46 +1,48 @@
 import { useDispatch, useSelector } from 'react-redux'
-import React, { useEffect, useState } from "react";
+import  { useEffect} from "react";
 import { DeleteTask, EditTask, GetList } from "../Redux/Actions/ListActions";
+import {  MainData, Datatype } from '../../Interface/Types';
 
 
-const List = ({ toupdate }) => {
-const [loading, setLoading] = useState(false)
+const List = (): JSX.Element => {
 
-  const dispatch = useDispatch()
+const dispatch = useDispatch()
 
-const ListData=useSelector((state)=>state.GetListReducer)
-
+const ListData=useSelector((state:Datatype)=>state.GetListReducer.data)
 
   useEffect(() => {
     const mydata = async () => {
       dispatch(GetList());
     };
     mydata();
-  }, [toupdate]);
+  }, [ListData,dispatch]);
 
-  const del = async (id) => {
-    dispatch(DeleteTask(id));
-    return toupdate();
+  const del = async (id:number) => {
+    
+    dispatch(DeleteTask(id)); 
   };
 
-  const edit = async (index) => {
-    let edititem = ListData.find((element) => {
+  const edit = async (index:number) => {
+    let edititem = ListData.find((element:{id:number,content:string}) => {
       return element.id === index;
     });
-    let abc = prompt("Please enter your name", edititem.content);
-
-    let newTaskData = {
-      updated: { content: abc },
-      edititem,
-    };
-    dispatch(EditTask(newTaskData));
-    return toupdate();
+    
+    if(edititem) {
+      let abc = prompt("Please enter your name", edititem.content);
+      
+      let newTaskData = {
+        updated: { content: abc },
+        edititem,
+      };
+      dispatch(EditTask(newTaskData));
+     
+    }
   };
 
   return (
     <>
       <div className="showItem text-white">
-        {ListData.data.length>0?ListData.data?.map((items) => {
+        {ListData.length>0?ListData?.map((items:MainData) => {
           return (
             <div className="eachItem" key={items.id}>
               <h1>{items.content}</h1>
